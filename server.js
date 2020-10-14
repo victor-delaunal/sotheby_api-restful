@@ -5,12 +5,14 @@ const mongoose = require('mongoose')
 const { urlencoded } = require('body-parser')
 
 const app =  express()
+app.set(express.static("public"))
+app.set("view engine", 'ejs')
+app.set(bodyParser, urlencoded({extended: false}))
 // const 
 
 mongoose.set("useUnifiedTopology", true)
 mongoose.connect('mongodb://localhost/sothebyDB', {useNewUrlParser: true});
 
-app.use(bodyParser, urlencoded({extended: false}))
 const { Schema } = mongoose
 const paintingSchema = new Schema ({
     name: String,
@@ -18,12 +20,18 @@ const paintingSchema = new Schema ({
     price: Number
 })
 const Painting = mongoose.model("paintingSold", paintingSchema)
+const ripo = new paintingSchema ({
+    name: "cerise",
+    author: "ripolin",
+    price: 10.95
+})
+Painting.save([ripo])
+Painting.find({}, err, data => console.log(err || data))
 
-app.set("view engine", 'ejs')
-app.set(express.static("public"))
 app.get('/', (req, res) => {
     res.render("index", {})
 })
+
 
 
 app.listen(3000, () => {
